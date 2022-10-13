@@ -1,0 +1,19 @@
+---
+- name: Configure DNS Service Cache
+  hosts: ise
+  gather_facts: no
+  tasks:
+    - name: Enable DNS Caching | {{ inventory_hostname }}
+      cisco.ios.ios_config:
+        lines: service cache enable hosts ttl 300
+      register: output
+      failed_when: output.failed
+
+    - name: show running-config | {{ inventory_hostname }}
+      ansible.netcommon.cli_command:
+        command: show running-config
+      register: output
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ output.stdout | replace('\n\n','\n') }}" # remove empty lines

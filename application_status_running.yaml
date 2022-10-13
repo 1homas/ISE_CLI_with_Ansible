@@ -1,0 +1,54 @@
+---
+- name: Monitor ISE Application Status
+  hosts: ise
+  gather_facts: no
+  tasks:
+
+    - name: Wait for SSH | {{ inventory_hostname }}
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 22          # SSH
+        sleep: 10         # Default: 1.   Seconds to sleep between checks
+        timeout: 600      # Default: 300. Stop checking after <seconds>
+
+
+    # 💡 Application Server STATE may be {not running|initializing|running}
+    #--------------------------------------------------------------------------
+    # Example output:
+    #
+    # ISE PROCESS NAME                       STATE            PROCESS ID
+    # ...
+    # Application Server                     running          55108
+    # ...
+    #--------------------------------------------------------------------------
+
+    - name: Wait for ISE Application Server 'running' | {{ inventory_hostname }}
+      vars:
+        ansible_command_timeout: 90 # 💡 command requires ~40+ seconds
+      ansible.netcommon.cli_command:
+        command: show application status ise
+      register: output
+      until: output.stdout is regex('Application Server[ ]+running')
+      retries: 20
+
+
+    # 💡 Any empty lines in the pause prompt will be trimmed by Ansible!
+    #    The empty lines below begin with a Unicode U+2003 Em Space [ ]!
+    - name: ISE Login Ready
+      ansible.builtin.pause:
+        seconds: 0
+        prompt: |
+           
+           
+                     .
+                    /|\          ____                _       _
+                @  /|||\  @     |  _ \ ___  __ _  __| |_   _| |
+               @  /|||||\  @    | |_) / _ \/ _` |/ _` | | | | |
+               @  \|/ \|/  @    |  _ <  __/ (_| | (_| | |_| |_|
+                @.       .@     |_| \_\___|\__,_|\__,_|\__, (_)
+                 `Y@ @ @Y`                             |___/
+           
+           
+
+
+...

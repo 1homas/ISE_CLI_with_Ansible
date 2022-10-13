@@ -1,0 +1,13 @@
+---
+- name: Show ISE Version
+  hosts: ise
+  gather_facts: no
+  tasks:
+    - name: ISE CLI | show version
+      ansible.netcommon.cli_command:
+        command: show version
+      register: output
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ output.stdout | replace('\n\n','\n') }}" # remove empty lines

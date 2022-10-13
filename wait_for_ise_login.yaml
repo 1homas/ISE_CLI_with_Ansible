@@ -1,0 +1,53 @@
+---
+- name: Wait for SSH
+  hosts: ise
+  gather_facts: no
+  tasks:
+    - name: Wait for SSH | {{ inventory_hostname }}
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 22
+        state: started    # Port is open
+        sleep: 10         # Default: 1. Seconds between checks
+        timeout: 1200     # Default: 300. Stop checking after <seconds>
+
+    - name: Wait for HTTPS | {{ inventory_hostname }}
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 443
+        state: started    # Port is open
+        sleep: 10         # Default: 1. Seconds between checks
+        timeout: 1200     # Default: 300. Stop checking after <seconds>
+
+    - name: Wait for Login | {{ inventory_hostname }}
+      ansible.builtin.uri:
+        url: https://{{ ansible_host }}/admin/login.jsp
+        method: GET
+        follow_redirects: safe
+        timeout: 10
+        validate_certs: no
+        return_content: no
+      register: result
+      until: result.status == 200
+      retries: 1000
+
+    # 💡 Any empty lines in the pause prompt will be trimmed by Ansible!
+    #    The empty lines below begin with a Unicode U+2003 Em Space [ ]!
+    - name: ISE Login Ready
+      ansible.builtin.pause:
+        seconds: 0
+        prompt: |
+           
+           
+                     .
+                    /|\          ____                _       _
+                @  /|||\  @     |  _ \ ___  __ _  __| |_   _| |
+               @  /|||||\  @    | |_) / _ \/ _` |/ _` | | | | |
+               @  \|/ \|/  @    |  _ <  __/ (_| | (_| | |_| |_|
+                @.       .@     |_| \_\___|\__,_|\__,_|\__, (_)
+                 `Y@ @ @Y`                             |___/
+           
+           
+
+
+...

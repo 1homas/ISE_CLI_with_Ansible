@@ -1,0 +1,12 @@
+---
+- name: Wait for SSH
+  hosts: ise
+  gather_facts: no
+  tasks:
+    - name: Wait for SSH | {{ inventory_hostname }}
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 22          # SSH
+        state: started    # Port is open
+        sleep: 10         # Default: 1.   Seconds to sleep between checks
+        timeout: 300      # Default: 300. Stop checking after <seconds>
