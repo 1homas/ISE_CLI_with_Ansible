@@ -11,3 +11,8 @@
     - name: Show output
       ansible.builtin.debug:
         msg: "{{ output.stdout | replace('\n\n','\n') }}" # remove empty lines
+
+    # ⚠ Add `exit` command for <= ISE 3.1. Not needed for ISE 3.2!
+    - name: ISE CLI | exit
+      ansible.netcommon.cli_command:
+        command: exit
