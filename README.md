@@ -107,9 +107,9 @@ host_key_checking  = false             ; Avoid SSH `known_hosts` key checking
 stdout_callback    = yaml              ; Ansible output format: {default|minimal|yaml}
 callbacks_enabled  = ansible.posix.profile_tasks  ; Show task execution times
 interpreter_python = auto_silent       ; Silence warning about Python environment
-## log_path           = ./ansible.log   ; Log file. Default: /var/log/ansible.log
+# log_path           = ./ansible.log   ; Log file. Default: /var/log/ansible.log
 
-##💡 Increase timeouts to 60s for ISE CLI `show app status ise`
+#💡 Increase timeouts to 60s for ISE CLI `show app status ise`
 [persistent_connection]
 connect_timeout    = 60                ; Idle connection timeeout. Default: 30s 
 command_timeout    = 60                ; Per-command timeout. Default: 30s
