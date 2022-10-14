@@ -2,9 +2,13 @@
 
 Ansible playbooks for ISE command line interface (CLI) operations.
 
+> ⚠ ISE <= 3.1 releases require an additional `exit` command at the end of each Ansible script. Without this, the SSH session will be hung and subsequent CLI commands will fail with a command timeout because they cannot establish a normal session. You may fix this manually by doing a normal SSH session and choosing to use the existing session then `exit` it normally.
+
 ## ISE CLI with Ansible
 
 This will show you how to quickly install and use Ansible to run CLI commands against ISE.  While this may seem like a lot of work to run a few CLI commands that you could easily do with SSH, the ability to use these in a larger provisioning or automation workflow is very powerful!  The examples below will show you how work with CLI commands in exec mode, config mode, and interactive commands, and long-running commands and process monitoring via CLI.
+
+![Ansible Overview](images/Ansible_Overview.png)
 
 ## Setup
 
@@ -182,6 +186,12 @@ The easiest way to start using Ansible with ISE CLI is by doing the simplest sho
     - name: Show output
       ansible.builtin.debug:
         msg: "{{ output.stdout | replace('\n\n','\n') }}" # remove empty lines
+
+    # ⚠ Add `exit` command for <= ISE 3.1. Not needed for ISE 3.2!
+    - name: ISE CLI | exit
+      ansible.netcommon.cli_command:
+        command: exit
+      register: output
 ```
 
 This Ansible playbook will run the `show version command` using the `ansible.netcommon.cli_command` module then use the `ansible.builtin.debug` module to print it.  It will run on the inventory host `ise` as defined in your `hosts.yaml` file above. If you change it in the hosts file, you will want to change it in your playbook, too.
