@@ -157,10 +157,12 @@ env
 env | grep ISE_
 printenv ISE_SSH_USERNAME
 printenv ISE_SSH_PASSWORD
+```
 
 ### SSH Connectivity
 
 You *must* have SSH connectivity to ISE using either an SSH username+password or username+ssh_key for Ansible to work with ISE CLI. It is recommended that you try it first to verify your credentials work before you attempt to use them with Ansible:
+
 ```sh
 ssh {ise_admin}@ise.securitydemo.net
 ssh -i ~/.ssh/{ssh_private_key_file} {ise_admin}@ise.securitydemo.net
@@ -191,7 +193,6 @@ The easiest way to start using Ansible with ISE CLI is by doing the simplest sho
     - name: ISE CLI | exit
       ansible.netcommon.cli_command:
         command: exit
-      register: output
 ```
 
 This Ansible playbook will run the `show version command` using the `ansible.netcommon.cli_command` module then use the `ansible.builtin.debug` module to print it.  It will run on the inventory host `ise` as defined in your `hosts.yaml` file above. If you change it in the hosts file, you will want to change it in your playbook, too.
